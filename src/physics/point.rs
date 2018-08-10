@@ -36,6 +36,10 @@ impl Point {
         self / self.norm()
     }
 
+    pub fn normal(&self) -> Point {
+        Point::new(-self.y, self.x)
+    }
+
     pub fn new(x: f64, y: f64) -> Point {
         Point {
             x: x,

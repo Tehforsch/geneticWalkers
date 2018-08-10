@@ -4,12 +4,19 @@ extern crate opengl_graphics;
 use piston_window::{Button,EventLoop, Input, OpenGL, PistonWindow, WindowSettings,Motion, Key};
 use opengl_graphics::GlGraphics;
 use game::Game;
+use physics::body::Body;
+use physics::Physics;
 use physics::point::Point;
+use physics::spring::Spring;
+use tools::library::Library;
+use game::configuration::Configuration;
+use game::configuration::Skeleton;
 
 mod physics;
 mod game;
 mod tools;
 mod render;
+mod constants;
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -23,7 +30,9 @@ fn main() {
     window.set_max_fps(60);
 
     let mut gl = GlGraphics::new(opengl);
-    let mut game = game::Game::new();
+
+    let skeleton = get_skeleton();
+    let mut game = Game::new(Configuration::new_random(skeleton));
 
     while let Some(e) = window.next() {
         match e {
@@ -37,5 +46,20 @@ fn main() {
 
             _ => {}
         }
+    }
+}
+
+fn get_skeleton() -> Skeleton {
+    Skeleton {
+        body_positions: vec![
+            Point::new(100.0, 100.0),
+            Point::new(500.0, 100.0),
+            Point::new(100.0, 500.0),
+            Point::new(500.0, 500.0),
+        ],
+        springs: vec![
+            (0, 1),
+            (0, 2)
+        ]
     }
 }

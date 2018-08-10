@@ -16,15 +16,15 @@ pub fn render(context: Context, gl: &mut GlGraphics, game: &Game) {
     for body in game.physics.bodies.iter() {
         render_circle(context, gl, &body);
     }
-    // for spring in game.springs.iter() {
-    //     render_spring(context, gl, game.sim.get_body(spring.body1), game.sim.get_body(spring.body2));
-    // }
+    for spring in game.physics.springs.iter() {
+        render_spring(context, gl, &spring.b1.borrow(), &spring.b2.borrow());
+    }
 }
 
 fn render_circle(context: Context, gl: &mut GlGraphics, body: &Body) {
     circle(body.pos, body.radius, WHITE, context, gl);
 }
 
-// fn render_spring(context: Context, gl: &mut GlGraphics, body1: &Body, body2: &Body) {
-//     line(body1.pos, body2.pos, WHITE, context, gl);
-// }
+fn render_spring(context: Context, gl: &mut GlGraphics, body1: &Body, body2: &Body) {
+    line(body1.pos, body2.pos, WHITE, context, gl);
+}

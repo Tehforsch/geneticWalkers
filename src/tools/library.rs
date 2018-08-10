@@ -1,14 +1,15 @@
 use std::cell::RefCell;
 use std::cell::RefMut;
+use std::rc::Rc;
 
 pub struct Library<T> {
-    pub items: Vec<RefCell<T>>
+    pub items: Vec<Rc<RefCell<T>>>
 }
 
 impl<T> Library<T> {
     pub fn new(items: Vec<T>) -> Library<T> {
         Library {
-            items: items.into_iter().map(|i| RefCell::new(i)).collect()
+            items: items.into_iter().map(|i| Rc::new(RefCell::new(i))).collect()
         }
     }
 
@@ -21,17 +22,17 @@ impl<T> Library<T> {
         self.items.get(i).map(|b| b.borrow_mut())
     }
 
-    pub fn get_rc(&self, i: usize) -> Option<&RefCell<T>> {
-        self.items.get(i)
+    pub fn get_rc(&self, i: usize) -> Option<Rc<RefCell<T>>> {
+        self.items.get(i).map(|rc| rc.clone())
     }
 
     pub fn push(&mut self, item: T) {
-        self.items.push(RefCell::new(item));
+        self.items.push(Rc::new(RefCell::new(item)));
     }
 }
 
 pub struct SubLibrary<'a, T: 'a> {
-    pub items: Vec<&'a RefCell<T>>,
+    pub items: Vec<&'a Rc<RefCell<T>>>,
     index: usize
 }
 
@@ -42,13 +43,6 @@ impl<'a, T> SubLibrary<'a, T> {
             index: 0
         }
     }
-
-    // pub fn from_item(item: &'a RefCell<T>) -> SubLibrary<'a, T> {
-    //     SubLibrary {
-    //         items: vec![item],
-    //         index: 0
-    //     }
-    // }
 }
 
 
