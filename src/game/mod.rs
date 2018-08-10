@@ -1,6 +1,4 @@
 use physics::Physics;
-use ::tools::library::SubLibrary;
-use physics::point::Point;
 use physics::body::Body;
 use physics::spring::Spring;
 use tools::library::Library;

@@ -9,7 +9,6 @@ pub struct Configuration {
 
 impl Configuration {
     pub fn new_random(skeleton: Skeleton) -> Configuration {
-        let num_springs = skeleton.springs.len();
         let parameters = skeleton.springs.iter()
             .map(
                 |_| SpringParameter 

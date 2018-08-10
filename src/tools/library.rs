@@ -18,9 +18,9 @@ impl<T> Library<T> {
         SubLibrary::new(self)
     }
 
-    pub fn get(&self, i: usize) -> Option<RefMut<T>> {
-        self.items.get(i).map(|b| b.borrow_mut())
-    }
+    // pub fn get(&self, i: usize) -> Option<RefMut<T>> {
+    //     self.items.get(i).map(|b| b.borrow_mut())
+    // }
 
     pub fn get_rc(&self, i: usize) -> Option<Rc<RefCell<T>>> {
         self.items.get(i).map(|rc| rc.clone())

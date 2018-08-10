@@ -1,14 +1,10 @@
 extern crate piston_window;
 extern crate opengl_graphics;
 
-use piston_window::{Button,EventLoop, Input, OpenGL, PistonWindow, WindowSettings,Motion, Key};
+use piston_window::{EventLoop, Input, OpenGL, PistonWindow, WindowSettings};
 use opengl_graphics::GlGraphics;
 use game::Game;
-use physics::body::Body;
-use physics::Physics;
 use physics::point::Point;
-use physics::spring::Spring;
-use tools::library::Library;
 use game::configuration::Configuration;
 use game::configuration::Skeleton;
 
@@ -21,7 +17,7 @@ mod constants;
 fn main() {
     let opengl = OpenGL::V3_2;
 
-    let mut settings = WindowSettings::new(
+    let settings = WindowSettings::new(
         "Amazing Grame", [1920 as u32, 1080 as u32])
         .opengl(opengl).samples(8).fullscreen(false);
     let mut window: PistonWindow = settings.build().unwrap();

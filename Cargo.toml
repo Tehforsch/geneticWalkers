@@ -1,5 +1,5 @@
 [package]
-name = "geneticWalkersRust"
+name = "genetic_walkers"
 version = "0.1.0"
 authors = ["Tehforsch <Tonipeter92@googlemail.com>"]
 

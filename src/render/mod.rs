@@ -1,7 +1,7 @@
 mod draw;
 
 use opengl_graphics::GlGraphics;
-use piston_window::{self, Context, Transformed};
+use piston_window::{self, Context};
 
 use self::draw::circle;
 use self::draw::line;
