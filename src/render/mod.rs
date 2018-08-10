@@ -6,17 +6,17 @@ use piston_window::{self, Context};
 use self::draw::circle;
 use self::draw::line;
 use physics::body::Body;
-use game::Game;
+use game::simulation::Simulation;
 
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 
-pub fn render(context: Context, gl: &mut GlGraphics, game: &Game) {
+pub fn render(context: Context, gl: &mut GlGraphics, sim: &Simulation) {
     piston_window::clear(BLACK, gl);
-    for body in game.physics.bodies.iter() {
+    for body in sim.physics.bodies.iter() {
         render_circle(context, gl, &body);
     }
-    for spring in game.physics.springs.iter() {
+    for spring in sim.physics.springs.iter() {
         render_spring(context, gl, &spring.b1.borrow(), &spring.b2.borrow());
     }
 }
