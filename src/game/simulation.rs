@@ -28,10 +28,10 @@ impl Simulation {
     pub fn new(skeleton: &Skeleton, conf: &Configuration) -> Simulation {
         let mut bodies = Library::new(vec![]);
         let mut springs = Library::new(vec![]);
-        for &pos in skeleton.body_positions.iter() {
-            bodies.push(Body::new(pos, 1.0, 10.0));
+        for (&pos, params) in skeleton.body_positions.iter().zip(conf.body_parameters.iter()) {
+            bodies.push(Body::new(pos, 1.0, 10.0, params.phase_shift));
         }
-        for (spring, params) in skeleton.springs.iter().zip(conf.parameters.iter()) {
+        for (spring, params) in skeleton.springs.iter().zip(conf.spring_parameters.iter()) {
             let b1 =  bodies.get_rc(spring.0).unwrap();
             let b2 =  bodies.get_rc(spring.1).unwrap();
             let dist = (b1.borrow().pos - b2.borrow().pos).norm();
@@ -40,7 +40,7 @@ impl Simulation {
                     b1: b1,
                     b2: b2,
                     strength: params.strength,
-                    frequency: params.frequency,
+                    phase_shift: params.phase_shift,
                     amplitude: params.amplitude,
                     rest_length: dist,
                 }

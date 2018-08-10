@@ -9,7 +9,7 @@ use physics::point::Point;
 use opengl_graphics::GlGraphics;
 use ::render;
 use piston_window::Context;
-use ::constants::{NUM_SURVIVORS,NUM_INDIVIDUALS,NUM_MUTATIONS,NUM_GENERATIONS};
+use ::constants::{NUM_SURVIVORS,NUM_INDIVIDUALS,NUM_MUTATIONS,NUM_GENERATIONS,MUTATION_RATE_DECAY,INITIAL_MUTATION_RATE};
 use self::rand::{thread_rng, Rng};
 
 pub struct Game {
@@ -23,13 +23,15 @@ impl Game {
 
     pub fn new() -> Game {
         let skeleton = Game::get_skeleton();
-        let mut configurations: Vec<Configuration> = (1..NUM_INDIVIDUALS)
+        let mut configurations: Vec<Configuration> = (0..NUM_INDIVIDUALS)
             .map(|_| Configuration::new_random(&skeleton))
             .collect();
 
-        for i in 1..NUM_GENERATIONS {
-            Game::optimize_configurations(&skeleton, &mut configurations);
-            println!("Generation {}, best score: {}", i, configurations.iter().map(|conf| conf.score).max().unwrap());
+        let mut mutation_rate = INITIAL_MUTATION_RATE;
+        for i in 0..NUM_GENERATIONS {
+            Game::optimize_configurations(&skeleton, &mut configurations, mutation_rate);
+            mutation_rate *= MUTATION_RATE_DECAY;
+            println!("Generation {}, best score: {}, mutation rate: {}", i, configurations.iter().map(|conf| conf.score).max().unwrap(), mutation_rate);
         }
 
         Game {
@@ -37,7 +39,7 @@ impl Game {
         }
     }
 
-    fn optimize_configurations(skeleton: &Skeleton, configurations: &mut Vec<Configuration>) {
+    fn optimize_configurations(skeleton: &Skeleton, configurations: &mut Vec<Configuration>, mutation_rate: f64) {
         for conf in configurations.iter_mut() {
             conf.evaluate(skeleton);
         }
@@ -49,7 +51,7 @@ impl Game {
         for _ in 1..(NUM_MUTATIONS) {
             let mut new_individual = {
                 let survivor = rng.choose(configurations).unwrap();
-                survivor.mutate()
+                survivor.mutate(mutation_rate)
             };
             new_individual.evaluate(skeleton);
             configurations.push(new_individual);
@@ -59,10 +61,10 @@ impl Game {
     fn get_skeleton() -> Skeleton {
         Skeleton {
             body_positions: vec![
-                Point::new(100.0, 400.0),
-                Point::new(500.0, 400.0),
+                Point::new(0.0, 700.0),
+                Point::new(100.0, 700.0),
+                Point::new(0.0, 800.0),
                 Point::new(100.0, 800.0),
-                Point::new(500.0, 800.0),
             ],
             springs: vec![
                 (0, 1),
@@ -73,6 +75,18 @@ impl Game {
                 (2, 3),
             ]
         }
+        // Skeleton {
+        //     body_positions: vec![
+        //         Point::new(0.0, 800.0),
+        //         Point::new(50.0, 750.0),
+        //         Point::new(100.0, 800.0),
+        //     ],
+        //     springs: vec![
+        //         (0, 1),
+        //         (1, 2),
+        //         (2, 0),
+        //     ]
+        // }
     }
 
     pub fn render(&self, context: Context, gl: &mut GlGraphics) {

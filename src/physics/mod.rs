@@ -19,7 +19,7 @@ impl Physics {
     pub fn timestep(&mut self) {
         self.time += constants::DT;
         for mut b in self.bodies.iter() {
-            b.integrate(constants::DT);
+            b.integrate(self.time, constants::DT);
         }
         for mut s in self.springs.iter() {
             s.timestep(self.time);
@@ -56,9 +56,11 @@ impl Physics {
                 if depth > 0.0 {
                     let normal_impulse = body.mass * body.vel * wall.normal;
                     body.apply_impulse(wall.normal * (normal_impulse * (-1.0 - constants::WALL_RESTITUTION) + depth * constants::BAUMGARTE_CORRECTION_STRENGTH));
-                    let tangent = wall.normal.normal();
-                    let tangent_impulse = body.mass * body.vel * tangent;
-                    body.apply_impulse(tangent * (-constants::WALL_FRICTION * tangent_impulse));
+                    if body.has_friction {
+                        let tangent = wall.normal.normal();
+                        let tangent_impulse = body.mass * body.vel * tangent;
+                        body.apply_impulse(tangent * (-constants::WALL_FRICTION * tangent_impulse));
+                    }
                 }
             }
         }

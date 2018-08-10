@@ -10,6 +10,7 @@ use game::simulation::Simulation;
 
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
 pub fn render(context: Context, gl: &mut GlGraphics, sim: &Simulation) {
     piston_window::clear(BLACK, gl);
@@ -22,7 +23,11 @@ pub fn render(context: Context, gl: &mut GlGraphics, sim: &Simulation) {
 }
 
 fn render_circle(context: Context, gl: &mut GlGraphics, body: &Body) {
-    circle(body.pos, body.radius, WHITE, context, gl);
+    let color = match body.has_friction {
+        true => RED,
+        false => WHITE
+    };
+    circle(body.pos, body.radius, color, context, gl);
 }
 
 fn render_spring(context: Context, gl: &mut GlGraphics, body1: &Body, body2: &Body) {
