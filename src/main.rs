@@ -1,7 +1,7 @@
 extern crate piston_window;
 extern crate opengl_graphics;
 
-use piston_window::{EventLoop, Input, OpenGL, PistonWindow, WindowSettings};
+use piston_window::{EventLoop, Input, OpenGL, PistonWindow, WindowSettings,Button,Key};
 use opengl_graphics::GlGraphics;
 use game::Game;
 
@@ -35,6 +35,15 @@ fn main() {
 
             Input::Render(args) => {
                 gl.draw(args.viewport(), |context, gl| game.render(context, gl));
+            }
+
+            Input::Press(Button::Keyboard(key)) => {
+                match key {
+                    Key::R => {
+                        game.reset();
+                    }
+                    _ => {}
+                }
             }
 
             _ => {}
